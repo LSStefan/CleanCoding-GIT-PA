@@ -120,11 +120,14 @@ void canbe(GPH *g, int nrv, STK *s1, STK *s2) // 0 sau 1 daca poate fi sau nu aj
         DFS(g, s1, i);
         wipe(g, nrv);
         int j = 0;
+        int ans = 0;
         DFS(g, s2, j);
         for (int j = 0; j < nrv && !ans; j++)
             for (int i = 0; i < nrv && !ans; i++)
-                if ((s1->arr[i] * /= = j) && (s2->arr[j] == i))
-                    canbe = 1;
+                if ((s1->arr[i] == j) && (s2->arr[j] == i))
+                    ans = 1;
+        
+
     }
     
 }
