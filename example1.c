@@ -20,7 +20,7 @@ typedef struct
     struct Node **alst;
 } GPH;
 
-typedef struct s
+typedef struct
 {
     int t;
     int scap;
