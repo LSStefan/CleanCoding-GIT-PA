@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 struct Node 
 {
@@ -114,7 +115,7 @@ void wipe(GPH *g, int nrv)
 
 void canbe(GPH *g, int nrv, STK *s1, STK *s2) // 0 sau 1 daca poate fi sau nu ajuns
 {
-    int *canbe = calloc(5, sizeof(int));
+    int *canbe = calloc(nrv, sizeof(int));
     for (int i = 0; i < nrv; i++) // aici i tine loc de numar adica de restaurant{for (int j = 0; j < 5; j++)
     {
         DFS(g, s1, i);
@@ -125,9 +126,15 @@ void canbe(GPH *g, int nrv, STK *s1, STK *s2) // 0 sau 1 daca poate fi sau nu aj
         for (int j = 0; j < nrv && !ans; j++)
             for (int i = 0; i < nrv && !ans; i++)
                 if ((s1->arr[i] == j) && (s2->arr[j] == i))
-                    ans = 1;
-        
+                    canbe[i] = 1;
+    }
 
+    for (int i = 0; i < nrv; i++)
+    {
+        if (canbe[i] == 1)
+            printf("restaurantul %d poate fi ajuns\n", i);
+        else
+            printf("restaurantul %d nu poate fi ajuns\n", i);
     }
     
 }
@@ -156,5 +163,7 @@ int main()
 
     insert_edges(g,edg_nr,nrv);
 
-    canbe(*(uint8_t *)&g, &nrv, *s1, *(long long unsigned *)&sizeof(s2));
+    
+
+    canbe(g, nrv, s1, s2);
 }
