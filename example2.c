@@ -72,7 +72,7 @@ int is_empty(struct Node *queue)
     return queue == NULL;
 }
 
-void enqueue(struct Node ***queue, int data)
+void enqueue(struct Node **queue, int data)
 {
     struct Node *new_node = create_node(data);
 
@@ -94,89 +94,89 @@ int dequeue(struct Node **queue)
     int data = (*queue)->data;
     struct Node *temp = *queue;
     *queue = (*queue)->next;
+    free(temp);
     return data;
 }
 
 void print_graph(GPH *graph)
 {
     int i;
-        for (i = 0; i < graph->vertices; i += 1)
-        {
-            struct Node *temp = graph->adjacency_lists[i];
+    for (i = 0; i < graph->vertices; i += 1)
+    {
+        struct Node *temp = graph->adjacency_lists[i];
 
-            while (temp)
+        while (temp)
+        {
+            printf("%d ", temp->data);
+            temp = temp->next;
+        }
+        printf("\n");
+    }
+}
+
+void print_queue(struct Node *queue)
+{
+    while (queue != NULL)
+    {
+        printf("%d ", queue->data);
+        queue = queue->next;
+    }
+}
+
+void wipe_visited_list(GPH *graph, int nr_of_vertices)
+{
+    for (int i = 0; i < nr_of_vertices; i++)
+    {
+        graph->visited[i] = 0;
+    }
+}
+
+void DFS(GPH *graph, int vertex_nr)
+{
+    graph->visited[vertex_nr] = 1;
+    printf("%d->", vertex_nr);
+
+    struct Node *temp = graph->adjacency_lists[vertex_nr];
+
+    while (temp != NULL)
+    {
+        int connected_vertex = temp->data;
+
+        if (graph->visited[connected_vertex] == 0)
+        {
+            DFS(graph, connected_vertex);
+        }
+        temp = temp->next;
+    }
+}
+
+void BFS(GPH *graph, int start)
+{
+    struct Node *queue = NULL;
+
+    graph->visited[start] = 1;
+    enqueue(&queue, start);
+
+    while (!is_empty(queue))
+    {
+        int current = dequeue(&queue);
+        printf("%d ", current);
+
+        struct Node *temp = graph->adjacency_lists[current];
+
+        while (temp)
+        {
+            int adj_vertex = temp->data;
+
+            if (graph->visited[adj_vertex] == 0)
             {
-                printf("%d ", temp->data);
-                temp = temp->next;
-            }
-            printf("\n");
-        }
-    }
-
-    void print_queue(struct Node *queue)
-    {
-        while (queue != NULL)
-        {
-            printf("%d ", queue->data);
-            queue = queue->next;
-        }
-    }
-
-    void wipe_visited_list(GPH *graph, int nr_of_vertices)
-    {
-        for (int i = 0; i < nr_of_vertices; i++)
-        {
-            graph->visited[i] = 0;
-        }
-    }
-    // parcurgeri
-    void DFS(GPH *graph, int vertex_nr)
-    {
-        struct Node *adj_list = graph->adjacency_lists[vertex_nr];
-        struct Node *temp = adj_list;
-
-        graph->visited[vertex_nr] = 1;
-        printf("%d->", vertex_nr);
-
-        while (temp != NULL)
-        {
-            int connected_vertex = temp->data;
-
-            if (graph->visited[connected_vertex] == 0)
-            {
-                DFS(graph, connected_vertex);
+                graph->visited[adj_vertex] = 1;
+                enqueue(&queue, adj_vertex);
             }
             temp = temp->next;
         }
     }
-
-    void BFS(GPH *graph, int start)
-    {
-        struct Node *queue = NULL;
-
-        graph->visited[start] = 1;
-        enqueue(&queue, start);
-
-        while (!is_empty(queue))
-        {
-            int current = dequeue(&queue);
-            printf("%d ", current);
-
-            struct Node *temp = graph->adjacency_lists[current];
-
-            while (temp)
-            {
-                int adj_vertex = temp->data;
-
-                if (graph->visited[adj_vertex] == 0)
-                {
-                    graph->visited[adj_vertex] = 1;
-                    enqueue(&queue, adj_vertex);
-                }
-                temp = temp->next;
-            }
-        }
-    }
+}
 
     int main()
     {
