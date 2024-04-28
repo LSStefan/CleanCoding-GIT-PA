@@ -113,35 +113,21 @@ void wipe(GPH *g, int nrv)
 } 
 
 
-void canbe(GPH *g, int nrv, STK *s1, STK *s2) // 0 sau 1 daca poate fi sau nu ajuns
+int canbe(GPH *g, int src, int dest)
 {
-    int *canbe = calloc(nrv, sizeof(int));
-    for (int i = 0; i < nrv; i++) // aici i tine loc de numar adica de restaurant{for (int j = 0; j < 5; j++)
+    struct Node *adj_list = g->alst[src];
+    struct Node *aux = adj_list;
+    while (aux != NULL)
     {
-        DFS(g, s1, i);
-        wipe(g, nrv);
-        int j = 0;
-        int ans = 0;
-        DFS(g, s2, j);
-        for (int j = 0; j < nrv && !ans; j++)
-            for (int i = 0; i < nrv && !ans; i++)
-                if ((s1->arr[i] == j) && (s2->arr[j] == i))
-                    canbe[i] = 1;
+        if (aux->data == dest)
+            return 1;
+        aux = aux->next;
     }
-
-    for (int i = 0; i < nrv; i++)
-    {
-        if (canbe[i] == 1)
-            printf("restaurantul %d poate fi ajuns\n", i);
-        else
-            printf("restaurantul %d nu poate fi ajuns\n", i);
-    }
-    
+    return 0;
 }
 
 int main()
 {
-
     int nrv;
     int edg_nr;
     int src, dest;
@@ -161,9 +147,17 @@ int main()
     STK *s1 = create_s(2 * nrv);
     STK *s2 = create_s(2 * nrv);
 
-    insert_edges(g,edg_nr,nrv);
+    insert_edges(g, edg_nr, nrv);
 
-    
+    int restaurant1, restaurant2;
+    printf("Introduceti doua restaurante pentru a verifica daca exista un drum direct intre ele: ");
+    scanf("%d%d", &restaurant1, &restaurant2);
 
-    canbe(g, nrv, s1, s2);
+    if (canbe(g, restaurant1, restaurant2))
+        printf("Exista un drum direct intre restaurantul %d si restaurantul %d\n", restaurant1, restaurant2);
+    else
+        printf("Nu exista un drum direct intre restaurantul %d si restaurantul %d\n", restaurant1, restaurant2);
+
+    return 0;
 }
+
